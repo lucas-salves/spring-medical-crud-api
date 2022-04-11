@@ -1,6 +1,6 @@
-package com.gcb.DoctorsService.service;
+package com.gcb.DoctorConsumer.service;
 
-import com.gcb.DoctorsService.config.AMQPConfig;
+import com.gcb.DoctorConsumer.config.AMQPConfig;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
 import java.io.IOException;
