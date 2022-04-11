@@ -20,58 +20,60 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class DoctorRequest {
 
     @Id
     @Column(length = 7, nullable = false, unique = true)
-    @JsonProperty("crm")
+    @SerializedName("crm")
     private String crm;
 
-    @JsonProperty("name")
+    @SerializedName("name")
     @Column(length = 120, nullable = false, unique = false)
     private String name;
 
     @Column(length = 10, nullable = true, unique = false)
-    @JsonProperty("landline")
+    @SerializedName("landline")
     private String landline;
 
     @Column(length = 11, nullable = true, unique = false)
-    @JsonProperty("mobilePhone")
+    @SerializedName("mobilePhone")
     private String mobilePhone;
 
     @Column(length = 8, nullable = false, unique = false)
-    @JsonProperty("postalCode")
+    @SerializedName("postalCode")
     private String postalCode;
 
     @Column(nullable = true)
-    @JsonProperty("addressComplement")
+    @SerializedName("addressComplement")
     private String addressComplement;
 
     @Column(nullable = false)
-    @JsonProperty("street")
+    @SerializedName("street")
     private String street;
 
     @Column(nullable = false)
-    @JsonProperty("neighborhood")
+    @SerializedName("neighborhood")
     private String neighborhood;
 
     @Column(nullable = false)
-    @JsonProperty("city")
+    @SerializedName("city")
     private String city;
 
     @Column(nullable = false)
-    @JsonProperty("uf")
+    @SerializedName("uf")
     @NonNull
     private String uf;
 
     @Column(nullable = false)
-    @JsonProperty("status")
+    @SerializedName("status")
     private String status;
 
     @Column(nullable = false)
-    @JsonProperty("createdAt")
+    @SerializedName("createdAt")
     private String createdAt;
 
-    @JsonProperty("specialtiesId")
+    @SerializedName("specialtiesId")
     private List<Long> specialtiesId;
 }
