@@ -1,46 +1,27 @@
-package com.gcb.DoctorsService.entity;
+package com.gcb.DoctorsService.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gcb.DoctorsService.entity.Doctor;
+import com.gcb.DoctorsService.entity.DoctorSpecialty;
 import com.google.gson.annotations.SerializedName;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
-@Entity
-@Table(name = "doctor")
-public class Doctor {
+@Data
+public class DoctorRequest {
 
-    public Doctor() {
-    }
-    
-    
-
-    public Doctor(String crm, String name, String landline, String mobilePhone, String postalCode, String addressComplement, String street, String neighborhood, String city, String uf, String status, String createdAt) {
-        this.crm = crm;
-        this.name = name;
-        this.landline = landline;
-        this.mobilePhone = mobilePhone;
-        this.postalCode = postalCode;
-        this.addressComplement = addressComplement;
-        this.street = street;
-        this.neighborhood = neighborhood;
-        this.city = city;
-        this.uf = uf;
-        this.status = status;
-        this.createdAt = createdAt;
-    }
-    
     @Id
     @Column(length = 7, nullable = false, unique = true)
     @JsonProperty("crm")
@@ -80,10 +61,8 @@ public class Doctor {
 
     @Column(nullable = false)
     @JsonProperty("uf")
+    @NonNull
     private String uf;
-    
-    @OneToMany(mappedBy = "doctor")
-    private Set<DoctorSpecialty> doctorSpecialties;
 
     @Column(nullable = false)
     @JsonProperty("status")
@@ -92,4 +71,7 @@ public class Doctor {
     @Column(nullable = false)
     @JsonProperty("createdAt")
     private String createdAt;
+
+    @JsonProperty("specialtiesId")
+    private List<Long> specialtiesId;
 }
