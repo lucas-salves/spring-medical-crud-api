@@ -1,4 +1,4 @@
-package com.gcb.DoctorsService.config;
+package com.gcb.DoctorConsumer.config;
 
 
 import com.rabbitmq.client.Connection;
