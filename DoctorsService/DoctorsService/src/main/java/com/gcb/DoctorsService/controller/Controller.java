@@ -8,9 +8,16 @@ import com.gcb.DoctorsService.model.MedicalSpecialty;
 import com.gcb.DoctorsService.repository.DoctorRepository;
 import com.gcb.DoctorsService.repository.DoctorSpecialtyRepository;
 import com.gcb.DoctorsService.repository.SpecialtyRepository;
+import com.gcb.DoctorsService.service.AMQPPublisher;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/doctor")
 public class Controller {
+    
+    private final Gson gson = new Gson();
     
     @Autowired
     private DoctorRepository repository;
@@ -43,6 +52,30 @@ public class Controller {
         
         specialtyRepository.save(especialidade1);
         specialtyRepository.save(especialidade2);
+    }
+    
+    @PostMapping(value = "/asyncCreate")
+    public ResponseEntity<String> asynCreate(@RequestBody DoctorRequest requestBody){
+        
+        if(requestBody.getSpecialtiesId().size() < 2){
+            return new ResponseEntity<String>("O número minimo de especialidades é 2.",HttpStatus.BAD_REQUEST);
+        }
+        
+        var json = gson.toJson(requestBody);
+        
+        try {
+//            var publisher = new AMQPPublisher();
+//            
+//            publisher.sendToQueue("save_doctor", json);
+            
+            return new ResponseEntity<String>("Em processamento.",HttpStatus.ACCEPTED);
+            
+        } catch (Exception ex) {
+            
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            
+            return new ResponseEntity<String>("Erro: "+ex.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     
     @PostMapping(value = "/create")
