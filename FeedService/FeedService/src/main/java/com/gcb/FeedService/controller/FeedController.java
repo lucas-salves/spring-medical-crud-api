@@ -51,19 +51,29 @@ public class FeedController {
 
     @GetMapping(value = "/getAll")
     public ResponseEntity<List<Feed>> listAll() throws Exception {
-        
+
         try {
-            
+
             Iterable feedsResponse = repository.findAll();
-            
+
             List<Feed> feeds = ImmutableList.copyOf(feedsResponse);
-            
+
             return new ResponseEntity<>(feeds, HttpStatus.OK);
         } catch (Exception ex) {
-            throw  new Exception(ex.getMessage());
+            throw new Exception(ex.getMessage());
         }
 
+    }
 
+    @GetMapping(value = "/get")
+    public ResponseEntity<Feed> getFeed(String feedId) throws Exception {
+        try{
+            var feed = repository.findById(feedId).get();
+            
+            return new ResponseEntity<>(feed, HttpStatus.OK);
+        }catch(Exception ex){
+            throw new Exception(ex.getMessage());
+        }
     }
 
 }
