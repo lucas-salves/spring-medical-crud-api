@@ -28,7 +28,7 @@ public class Feed {
     
     @SerializedName("feedErrors")
     private boolean feedErrors;
-    
+        
     @SerializedName("messageError")
     private String messageError;
     
