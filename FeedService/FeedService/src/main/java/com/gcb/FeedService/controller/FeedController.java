@@ -3,15 +3,11 @@ package com.gcb.FeedService.controller;
 import com.gcb.FeedService.entity.Feed;
 import com.gcb.FeedService.repository.FeedRepository;
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +34,7 @@ public class FeedController {
         try {
 
             repository.save(feed);
+            
         } catch (Exception ex) {
 
             throw new Exception(ex.getMessage());
