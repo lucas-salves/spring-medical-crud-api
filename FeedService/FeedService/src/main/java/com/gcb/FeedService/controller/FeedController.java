@@ -11,10 +11,12 @@ import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,8 +26,8 @@ public class FeedController {
     @Autowired
     FeedRepository repository;
 
-    @PostMapping(value = "/createFeed")
-    public ResponseEntity<Feed> createFeed(@RequestBody Feed feed) {
+    @PostMapping(value = "/create")
+    public ResponseEntity<Feed> createFeed(@RequestBody Feed feed) throws Exception {
 
         feed.setRequestAction("createFeed");
 
@@ -36,19 +38,14 @@ public class FeedController {
         try {
 
             repository.save(feed);
-
         } catch (Exception ex) {
 
-            feed.setFeedErrors(true);
-
-            feed.setMessageError("Erro desconhecido.");
-
-            return new ResponseEntity<Feed>(feed, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new Exception(ex.getMessage());
 
         }
         return new ResponseEntity<Feed>(feed, HttpStatus.CREATED);
     }
-
+    
     @GetMapping(value = "/getAll")
     public ResponseEntity<List<Feed>> listAll() throws Exception {
 
@@ -66,7 +63,7 @@ public class FeedController {
     }
 
     @GetMapping(value = "/get")
-    public ResponseEntity<Feed> getFeed(String feedId) throws Exception {
+    public ResponseEntity<Feed> getFeed(@RequestParam(name = "feedId") String feedId) throws Exception {
         try{
             var feed = repository.findById(feedId).get();
             
