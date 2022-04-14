@@ -3,6 +3,7 @@ package com.gcb.DoctorsService.controller;
 import com.gcb.DoctorsService.entity.Doctor;
 import com.gcb.DoctorsService.interactor.DoctorCreator;
 import com.gcb.DoctorsService.model.DoctorRequest;
+import com.gcb.DoctorsService.model.Feed;
 import com.gcb.DoctorsService.repository.DoctorRepository;
 import com.gcb.DoctorsService.repository.DoctorSpecialtyRepository;
 import com.gcb.DoctorsService.repository.SpecialtyRepository;
@@ -128,10 +129,17 @@ public class DoctorController {
     }
 
     @PostMapping(value = "/asyncCreate")
-    public ResponseEntity<String> asynCreate(@RequestBody DoctorRequest requestBody) {
+    public ResponseEntity<Feed> asynCreate(@RequestBody DoctorRequest requestBody) {
 
         if (requestBody.getSpecialtiesId().size() < 2) {
-            return new ResponseEntity<String>("O número minimo de especialidades é 2.", HttpStatus.BAD_REQUEST);
+            
+            Feed feedError = new Feed();
+            
+            feedError.setFeedErrors(true);
+            
+            feedError.setMessageError("O número minimo de especialidades é 2.");
+            
+            return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
         }
 
         var json = gson.toJson(requestBody);
@@ -140,14 +148,24 @@ public class DoctorController {
             var publisher = new AMQPPublisher();
             
             publisher.sendToQueue("doctor_address", json);
+            
+            DoctorCreator doctorCreator = new DoctorCreator();
+            
+            var feed = doctorCreator.generateFeed(requestBody.getCrm());
 
-            return new ResponseEntity<String>("Em processamento.", HttpStatus.ACCEPTED);
+            return feed;
 
         } catch (Exception ex) {
 
             Logger.getLogger(DoctorController.class.getName()).log(Level.SEVERE, null, ex);
+            
+            Feed feedError = new Feed();
+            
+            feedError.setFeedErrors(true);
+            
+            feedError.setMessageError(ex.getMessage());
 
-            return new ResponseEntity<String>("Erro: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Feed>(feedError, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

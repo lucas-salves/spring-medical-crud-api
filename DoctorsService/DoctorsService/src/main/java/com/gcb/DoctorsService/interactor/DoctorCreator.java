@@ -4,13 +4,19 @@ import com.gcb.DoctorsService.entity.Doctor;
 import com.gcb.DoctorsService.entity.DoctorSpecialty;
 import com.gcb.DoctorsService.entity.Specialty;
 import com.gcb.DoctorsService.model.DoctorRequest;
+import com.gcb.DoctorsService.model.Feed;
 import com.gcb.DoctorsService.repository.DoctorRepository;
 import com.gcb.DoctorsService.repository.DoctorSpecialtyRepository;
 import com.gcb.DoctorsService.repository.SpecialtyRepository;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 public class DoctorCreator {
 
@@ -22,6 +28,9 @@ public class DoctorCreator {
 
     @Autowired
     private DoctorSpecialtyRepository doctorSpecialtyRepository;
+    
+    @Autowired
+    private RestTemplate restTemplate;
 
     public ResponseEntity<Object> createDoctorUseCase(DoctorRequest requestBody) throws Exception{
 
@@ -98,4 +107,19 @@ public class DoctorCreator {
                 createdAt
         );
     }
+    
+    public ResponseEntity<Feed> generateFeed(String crm) throws URISyntaxException{
+        String baseUrl = "http://localhost:8084/feed/create";
+        
+        URI uri = new URI(baseUrl);
+        
+        HttpHeaders headers = new HttpHeaders();
+        
+        HttpEntity<String> request = new HttpEntity<>(crm, headers);
+        
+        ResponseEntity<Feed> result = restTemplate.postForEntity(uri, request, Feed.class);
+        
+        return result;
+    }
+    
 }
