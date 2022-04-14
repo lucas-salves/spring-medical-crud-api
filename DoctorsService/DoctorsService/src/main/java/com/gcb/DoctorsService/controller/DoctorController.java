@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/doctor")
-public class Controller {
+public class DoctorController {
     
     private final Gson gson = new Gson();
     
@@ -72,7 +72,7 @@ public class Controller {
             
         } catch (Exception ex) {
             
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DoctorController.class.getName()).log(Level.SEVERE, null, ex);
             
             return new ResponseEntity<String>("Erro: "+ex.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
