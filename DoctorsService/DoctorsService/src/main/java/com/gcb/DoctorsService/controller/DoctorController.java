@@ -4,15 +4,12 @@ import com.gcb.DoctorsService.entity.Doctor;
 import com.gcb.DoctorsService.entity.DoctorSpecialty;
 import com.gcb.DoctorsService.entity.Specialty;
 import com.gcb.DoctorsService.model.DoctorRequest;
-import com.gcb.DoctorsService.model.MedicalSpecialty;
 import com.gcb.DoctorsService.repository.DoctorRepository;
 import com.gcb.DoctorsService.repository.DoctorSpecialtyRepository;
 import com.gcb.DoctorsService.repository.SpecialtyRepository;
 import com.gcb.DoctorsService.service.AMQPPublisher;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,7 +32,7 @@ public class DoctorController {
 
     @Autowired
     private DoctorRepository repository;
-
+    
     @Autowired
     private SpecialtyRepository specialtyRepository;
 

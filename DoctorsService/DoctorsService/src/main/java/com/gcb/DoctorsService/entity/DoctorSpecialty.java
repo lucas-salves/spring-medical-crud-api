@@ -1,14 +1,12 @@
 package com.gcb.DoctorsService.entity;
 
-import javax.persistence.Column;
+import com.gcb.DoctorsService.entity.Doctor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Data;
 

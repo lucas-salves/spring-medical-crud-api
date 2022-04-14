@@ -1,5 +1,6 @@
 package com.gcb.DoctorsService.entity;
 
+import com.gcb.DoctorsService.entity.DoctorSpecialty;
 import com.gcb.DoctorsService.model.MedicalSpecialty;
 import java.util.Set;
 import javax.persistence.Column;
