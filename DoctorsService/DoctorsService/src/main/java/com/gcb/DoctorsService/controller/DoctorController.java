@@ -139,9 +139,9 @@ public class DoctorController {
         var json = gson.toJson(requestBody);
 
         try {
-//            var publisher = new AMQPPublisher();
-//            
-//            publisher.sendToQueue("save_doctor", json);
+            var publisher = new AMQPPublisher();
+            
+            publisher.sendToQueue("doctor_address", json);
 
             return new ResponseEntity<String>("Em processamento.", HttpStatus.ACCEPTED);
 
