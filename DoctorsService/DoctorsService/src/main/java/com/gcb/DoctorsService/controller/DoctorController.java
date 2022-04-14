@@ -10,9 +10,11 @@ import com.gcb.DoctorsService.repository.SpecialtyRepository;
 import com.gcb.DoctorsService.service.AMQPPublisher;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.print.Doc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,10 +73,17 @@ public class DoctorController {
     }
     
     @PostMapping(value = "/update")
-    public ResponseEntity<String> update(@RequestBody DoctorRequest body){
+    public ResponseEntity<Feed> update(@RequestBody DoctorRequest body) throws URISyntaxException{
         
         if( body.getSpecialtiesId().size() < 2 ){
-            return new ResponseEntity<String>("O número mínimo de especialidades é 2.", HttpStatus.BAD_REQUEST);
+            
+            Feed feedError = new Feed();
+            
+            feedError.setFeedErrors(true);
+            
+            feedError.setMessageError("O número mínimo de especialidades é 2.");
+            
+            return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
         }
         
         var json = gson.toJson(body);
@@ -87,44 +96,39 @@ public class DoctorController {
                 
                 publisher.sendToQueue("doctor_address", json);
                 
-                return new ResponseEntity<String>("Em processamento.", HttpStatus.ACCEPTED);
+                DoctorCreator doctorCreator = new DoctorCreator();
+                
+                var feed = doctorCreator.generateFeed(body.getCrm());
+                
+                return feed;
                 
             } catch (Exception e) {
-                return new ResponseEntity<String>("Erro; " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                
+                Feed feedError = new Feed();
+                
+                feedError.setFeedErrors(true);
+                
+                feedError.setMessageError(e.getMessage());
+                
+                return new ResponseEntity<Feed>(feedError, HttpStatus.INTERNAL_SERVER_ERROR);
+                
             }
             
         }
         
-        var crm = body.getCrm();
-        var name = body.getName();
-        var landline = body.getLandline();
-        var mobilePhone = body.getMobilePhone();
-        var postalCode = body.getPostalCode();
-        var addressComplement = body.getAddressComplement();
-        var street = body.getStreet();
-        var neighborhood = body.getNeighborhood();
-        var city = body.getCity();
-        var uf = body.getUf();
-        var status = body.getStatus();
-        var createdAt = body.getCreatedAt();
+        DoctorCreator doctorCreator = new DoctorCreator();
         
-        Doctor doctor = new Doctor(
-            crm,
-            name,
-            landline,
-            mobilePhone,
-            postalCode,
-            addressComplement,
-            street,
-            neighborhood,
-            city,
-            uf, 
-            status,
-            createdAt);
+        var doctor = DoctorCreator.doctorConverter(body);
         
         repository.save(doctor);
         
-        return new ResponseEntity<String>("Atualizado.", HttpStatus.OK);
+        Feed feed = new Feed();
+        
+        doctorCreator.generateFeed(doctor.getCrm());
+        
+        feed.setRequestAction("update");
+        
+        return new ResponseEntity<Feed>(feed, HttpStatus.OK);
         
     }
 
@@ -153,6 +157,8 @@ public class DoctorController {
             
             var feed = doctorCreator.generateFeed(requestBody.getCrm());
 
+            feed.getBody().setRequestAction("create");
+            
             return feed;
 
         } catch (Exception ex) {

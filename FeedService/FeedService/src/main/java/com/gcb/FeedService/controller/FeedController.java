@@ -25,8 +25,6 @@ public class FeedController {
     @PostMapping(value = "/create")
     public ResponseEntity<Feed> createFeed(@RequestBody Feed feed) throws Exception {
 
-        feed.setRequestAction("createFeed");
-
         feed.setStatus("Queued");
 
         feed.setCreatedAt(new Date().toString());
