@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,17 +42,18 @@ public class DoctorController {
     private DoctorSpecialtyRepository doctorSpecialtyRepository;
     
     @GetMapping(value = "/get")
-    public void index(){
-        var alergo = MedicalSpecialty.ALERGOLOGIA.getValue();
-        var angio = MedicalSpecialty.ANGIOLOGIA.getValue();
+    public ResponseEntity<Doctor> getDoctorById(@RequestParam("doctorId") String id) throws Exception{
         
-        Specialty especialidade1 = new Specialty();
-        Specialty especialidade2 = new Specialty();
-        especialidade1.setSpecialtyName(angio);
-        especialidade2.setSpecialtyName(alergo);
+        try {
+            
+            var doctor = repository.findById(id).get();
         
-        specialtyRepository.save(especialidade1);
-        specialtyRepository.save(especialidade2);
+            return new ResponseEntity<>(doctor, HttpStatus.OK);
+            
+        } catch (Exception e) {
+            
+            throw new Exception(e.getMessage());
+        }
     }
     
     @PostMapping(value = "/asyncCreate")
