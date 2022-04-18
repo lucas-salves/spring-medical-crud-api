@@ -270,15 +270,9 @@ public class DoctorController {
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
             }
             
-            
-
             Logger.getLogger(DoctorController.class.getName()).log(Level.SEVERE, null, ex);
-
-            feedError.setFeedErrors(true);
-
-            feedError.setMessageError(ex.getMessage());
-            return null;
-//            return new ResponseEntity<Feed>(feedError, HttpStatus.INTERNAL_SERVER_ERROR);
+            
+            return new ResponseEntity<Feed>(feedError, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
