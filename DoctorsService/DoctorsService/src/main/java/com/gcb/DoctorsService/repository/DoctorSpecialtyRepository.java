@@ -6,11 +6,13 @@ package com.gcb.DoctorsService.repository;
 
 import com.gcb.DoctorsService.entity.DoctorSpecialty;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author lucas
  */
+@Repository
 public interface DoctorSpecialtyRepository extends CrudRepository<DoctorSpecialty, Long>{
     
 }
