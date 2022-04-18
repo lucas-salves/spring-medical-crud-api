@@ -210,6 +210,10 @@ public class DoctorController {
             if( !(requestBody.getMobilePhone().matches("[0-9]+")) ){
                 throw new Exception("ERR: 6.mobilePhone: atributo mobilePhone só pode conter apenas números. Payload: "+requestBody.getCrm());
             }
+            
+            if( !(requestBody.getPostalCode().matches("[0-9]+")) ){
+                throw new Exception("ERR: 7.postalCode: atributo postalCode só pode conter apenas números. Payload: "+requestBody.getCrm());
+            }
 
             var publisher = new AMQPPublisher();
 
@@ -246,6 +250,9 @@ public class DoctorController {
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
             }
             if( ex.getMessage().contains("ERR: 6.") ){
+                return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
+            }
+            if( ex.getMessage().contains("ERR: 7.") ){
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
             }
 
