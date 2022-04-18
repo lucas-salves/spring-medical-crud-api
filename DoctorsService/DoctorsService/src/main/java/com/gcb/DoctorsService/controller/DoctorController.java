@@ -316,18 +316,21 @@ public class DoctorController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<Object> create(@RequestBody DoctorRequest requestBody) throws Exception {
+    public ResponseEntity<String> create(@RequestBody DoctorRequest requestBody) throws Exception {
 
         try {
-            System.out.println("/create: " + requestBody);
+            
             doctorCreator.createDoctorUseCase(requestBody);
 
-            return null;
+            
         } catch (Exception ex) {
             Logger.getLogger(DoctorController.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new Exception(ex.getMessage());
+            return new ResponseEntity<String>(ex.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        
+            return new ResponseEntity<>(null,HttpStatus.NO_CONTENT);
+        
 
     }
 }

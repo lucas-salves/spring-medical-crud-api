@@ -8,18 +8,13 @@ import com.gcb.DoctorsService.model.Feed;
 import com.gcb.DoctorsService.repository.DoctorRepository;
 import com.gcb.DoctorsService.repository.DoctorSpecialtyRepository;
 import com.gcb.DoctorsService.repository.SpecialtyRepository;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.GenericJDBCException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,21 +39,21 @@ public class DoctorCreator {
     public ResponseEntity<Object> createDoctorUseCase(DoctorRequest requestBody) throws Exception,GenericJDBCException {
 
         var specialtiesId = requestBody.getSpecialtiesId();
-        
+
         requestBody.setCreatedAt(new Date().toString());
 
         var doctor = DoctorCreator.doctorConverter(requestBody);
-        System.out.println("doctor: ");
-        System.out.println(doctor.getCrm());
 
         try {
-            System.out.println(doctor);
+            
             repository.save(doctor);
+            
         } catch (GenericJDBCException e) {
-            System.out.println("Exceção!!!");
+            
             throw new Exception(e.getMessage());
+            
         }catch(Exception e){
-            System.out.println("Exceção!!!");
+            
             throw new Exception(e.getMessage());
         }
 
