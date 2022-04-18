@@ -5,7 +5,7 @@ import com.gcb.DoctorConsumer.consumer.DoctorConsumer;
 
 public class DoctorWorker {
 
-    private static final String QUEUE_NAME = "save_doctor";
+    private static final String QUEUE_NAME = "doctor_address";
 
     public static void main(String[] args) throws Exception {
 

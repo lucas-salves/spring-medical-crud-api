@@ -8,8 +8,9 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class DoctorConsumerApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		SpringApplication.run(DoctorConsumerApplication.class, args);
+                DoctorWorker.main(args);
 	}
         
         @Bean

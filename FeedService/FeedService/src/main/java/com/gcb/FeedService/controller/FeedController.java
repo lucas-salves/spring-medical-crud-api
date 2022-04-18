@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,21 +26,39 @@ public class FeedController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<Feed> createFeed(@RequestBody Feed feed) throws Exception {
-
-        feed.setStatus("Queued");
+        
+        Feed newFeed = new Feed(
+                feed.getRequestId(),
+                "Create", 
+                "Processing", 
+                new Date().toString(),
+                "", 
+                false,
+                "");
 
         feed.setCreatedAt(new Date().toString());
-
         try {
 
             repository.save(feed);
             
         } catch (Exception ex) {
-
             throw new Exception(ex.getMessage());
 
         }
         return new ResponseEntity<Feed>(feed, HttpStatus.CREATED);
+    }
+    
+    @PutMapping(value = "/update")
+    public ResponseEntity<Feed> updateStatus(@RequestBody Feed feed) throws Exception{
+        System.out.println("Reques body: "+feed);
+        try {
+            var resp = repository.save(feed);
+            System.out.println(resp.getStatus());
+            System.out.println("resp>: "+resp);
+            return new ResponseEntity<>(feed, HttpStatus.CREATED);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
     
     @GetMapping(value = "/getAll")

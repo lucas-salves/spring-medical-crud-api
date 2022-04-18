@@ -1,23 +1,12 @@
 package com.gcb.DoctorsService.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gcb.DoctorsService.entity.Doctor;
-import com.gcb.DoctorsService.entity.DoctorSpecialty;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @Data
 @AllArgsConstructor
@@ -49,30 +38,29 @@ public class DoctorRequest {
     @SerializedName("addressComplement")
     private String addressComplement;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @SerializedName("street")
     private String street;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @SerializedName("neighborhood")
     private String neighborhood;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @SerializedName("city")
     private String city;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @SerializedName("uf")
-    @NonNull
     private String uf;
 
     @Column(nullable = false)
     @SerializedName("status")
     private String status;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @SerializedName("createdAt")
-    private String createdAt;
+    private String createdAt="";
 
     @SerializedName("specialtiesId")
     private List<Long> specialtiesId;

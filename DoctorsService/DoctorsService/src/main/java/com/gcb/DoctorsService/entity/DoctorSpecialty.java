@@ -1,5 +1,6 @@
 package com.gcb.DoctorsService.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.gcb.DoctorsService.entity.Doctor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,6 +20,7 @@ public class DoctorSpecialty {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "doctor_crm")
     private Doctor doctor;

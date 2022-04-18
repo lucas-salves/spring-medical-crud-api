@@ -14,11 +14,11 @@ import java.util.logging.Logger;
 
 public class AMQPConfig {
     
-    private static final String URI = "AWS URI";
+    private static final String URI = "amqps://b-19e96167-c7ed-43e7-b297-739d37f2b053.mq.us-east-2.amazonaws.com:5671";
 
-    private static final String USERNAME = "rabbitUser";
+    private static final String USERNAME = "admin";
 
-    private static final String PASSWORD = "rabbitPassword";
+    private static final String PASSWORD = "rabbitpassword";
 
     public static Connection getConnection() {
         

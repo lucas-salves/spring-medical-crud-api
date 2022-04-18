@@ -1,5 +1,6 @@
 package com.gcb.DoctorConsumer.consumer;
 
+import com.gcb.DoctorConsumer.interactor.AddressCreator;
 import com.gcb.DoctorConsumer.model.Doctor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,7 +15,10 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 public class DoctorConsumer extends DefaultConsumer {
@@ -27,6 +31,8 @@ public class DoctorConsumer extends DefaultConsumer {
     private RestTemplate restTemplate;
     
 
+    
+    
     public DoctorConsumer(Channel channel) {
         super(channel);
         this.channel = channel;
@@ -57,15 +63,14 @@ public class DoctorConsumer extends DefaultConsumer {
 
         var doctor = gson.fromJson(message, Doctor.class);
         
-        final String baseUrl = "http://localhost:8083/address/get";
+        AddressCreator addressCreator = new AddressCreator();
         
-        URI uri = new URI(baseUrl);
-        
-        HttpHeaders headers = new HttpHeaders();
-        
-        HttpEntity<Doctor> request = new HttpEntity<>(doctor, headers);
-
-        ResponseEntity<String> result = restTemplate.postForEntity(uri, request, String.class);
+        try {
+            addressCreator.getAddress(doctor);
+        }catch(Exception ex){
+            addressCreator.updateStatus(doctor.getCrm(),
+                    "Error", ex.getMessage());
+        }
 
     }
 }

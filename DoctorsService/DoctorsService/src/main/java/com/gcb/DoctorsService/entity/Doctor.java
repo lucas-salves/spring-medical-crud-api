@@ -1,19 +1,15 @@
 package com.gcb.DoctorsService.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -66,22 +62,23 @@ public class Doctor {
     @JsonProperty("addressComplement")
     private String addressComplement;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @JsonProperty("street")
     private String street;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @JsonProperty("neighborhood")
     private String neighborhood;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @JsonProperty("city")
     private String city;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @JsonProperty("uf")
     private String uf;
     
+    @JsonBackReference
     @OneToMany(mappedBy = "doctor")
     private Set<DoctorSpecialty> doctorSpecialties;
 
@@ -89,7 +86,7 @@ public class Doctor {
     @JsonProperty("status")
     private String status;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @JsonProperty("createdAt")
-    private String createdAt;
+    private String createdAt=null;
 }
