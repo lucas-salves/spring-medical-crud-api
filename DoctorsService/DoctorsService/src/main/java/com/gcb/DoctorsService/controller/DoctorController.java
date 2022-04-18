@@ -188,19 +188,19 @@ public class DoctorController {
         try {
 
             if (requestBody.getSpecialtiesId().size() < 2) {
-                throw new Exception("O número minimo de especialidades é 2.");
+                throw new Exception("ERR: 1.O número minimo de especialidades é 2. Payload: "+requestBody.getSpecialtiesId().size()+" especialidades.");
             }
 
             if (requestBody.getName().length() > 120) {
-                throw new Exception("Name: atributo Name acima de 120 caracteres.");
+                throw new Exception("ERR: 2.Name: atributo Name acima de 120 caracteres. Payload: "+requestBody.getName()+". Número de caracteres: "+requestBody.getName().length());
             }
             
             if(requestBody.getCrm().length() > 7){
-                throw new Exception("CRM: atributo CRM acima de 7 caracteres.");
+                throw new Exception("ERR: 3.CRM: atributo CRM acima de 7 caracteres. Payload: "+requestBody.getCrm()+". Número de caracteres: "+requestBody.getCrm().length());
             }
             
             if( !(requestBody.getCrm().matches("[0-9]+"))){
-                throw new Exception("CRM: atributo CRM só pode conter apenas números. Payload: "+requestBody.getCrm());
+                throw new Exception("ERR: 4.CRM: atributo CRM só pode conter apenas números. Payload: "+requestBody.getCrm());
             }
 
             var publisher = new AMQPPublisher();
@@ -219,19 +219,19 @@ public class DoctorController {
 
             feedError.setMessageError(ex.getMessage());
 
-            if ("Name: atributo Name acima de 120 caracteres.".equals(ex.getMessage())) {
+            if (ex.getMessage().contains("ERR: 1.")) {
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
             }
             
-            if("O número minimo de especialidades é 2.".equals(ex.getMessage())){
+            if(ex.getMessage().contains("ERR: 2.")){
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
             }
             
-            if("CRM: atributo CRM acima de 7 caracteres.".equals(ex.getMessage())){
+            if(ex.getMessage().contains("ERR: 3.")){
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
             }
             
-            if("CRM: atributo CRM só pode conter apenas números. Payload: ".contains(ex.getMessage())){
+            if( ex.getMessage().contains("ERR: 4.") ){
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
             }
 
@@ -240,8 +240,8 @@ public class DoctorController {
             feedError.setFeedErrors(true);
 
             feedError.setMessageError(ex.getMessage());
-
-            return new ResponseEntity<Feed>(feedError, HttpStatus.INTERNAL_SERVER_ERROR);
+            return null;
+//            return new ResponseEntity<Feed>(feedError, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
