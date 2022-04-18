@@ -194,6 +194,14 @@ public class DoctorController {
             if (requestBody.getName().length() > 120) {
                 throw new Exception("Name: atributo Name acima de 120 caracteres.");
             }
+            
+            if(requestBody.getCrm().length() > 7){
+                throw new Exception("CRM: atributo CRM acima de 7 caracteres.");
+            }
+            
+            if( !(requestBody.getCrm().matches("[0-9]+"))){
+                throw new Exception("CRM: atributo CRM só pode conter apenas números. Payload: "+requestBody.getCrm());
+            }
 
             var publisher = new AMQPPublisher();
 
@@ -216,6 +224,14 @@ public class DoctorController {
             }
             
             if("O número minimo de especialidades é 2.".equals(ex.getMessage())){
+                return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
+            }
+            
+            if("CRM: atributo CRM acima de 7 caracteres.".equals(ex.getMessage())){
+                return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
+            }
+            
+            if("CRM: atributo CRM só pode conter apenas números. Payload: ".contains(ex.getMessage())){
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
             }
 
