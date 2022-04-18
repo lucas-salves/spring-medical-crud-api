@@ -3,6 +3,7 @@ package com.gcb.FeedService.controller;
 import com.gcb.FeedService.entity.Feed;
 import com.gcb.FeedService.repository.FeedRepository;
 import com.google.common.collect.ImmutableList;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,10 @@ public class FeedController {
 
     @Autowired
     FeedRepository repository;
-
+    
+    @ApiResponse(responseCode = "201", description = "Feed Criado com sucesso.")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     @PostMapping(value = "/create")
     public ResponseEntity<Feed> createFeed(@RequestBody Feed feed) throws Exception {
         
@@ -48,6 +52,9 @@ public class FeedController {
         return new ResponseEntity<Feed>(feed, HttpStatus.CREATED);
     }
     
+    @ApiResponse(responseCode = "204", description = "Feed alterado com sucesso.")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     @PutMapping(value = "/update")
     public ResponseEntity<Feed> updateStatus(@RequestBody Feed feed) throws Exception{
         System.out.println("Reques body: "+feed);
@@ -55,12 +62,15 @@ public class FeedController {
             var resp = repository.save(feed);
             System.out.println(resp.getStatus());
             System.out.println("resp>: "+resp);
-            return new ResponseEntity<>(feed, HttpStatus.CREATED);
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
     
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     @GetMapping(value = "/getAll")
     public ResponseEntity<List<Feed>> listAll() throws Exception {
 
@@ -77,6 +87,9 @@ public class FeedController {
 
     }
 
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     @GetMapping(value = "/get")
     public ResponseEntity<Feed> getFeed(@RequestParam(name = "feedId") String feedId) throws Exception {
         try{

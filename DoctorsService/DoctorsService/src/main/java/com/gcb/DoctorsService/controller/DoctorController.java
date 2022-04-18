@@ -154,7 +154,7 @@ public class DoctorController {
 
     @ApiResponse(responseCode = "400", description = "Bad Request")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
-    @ApiResponse(responseCode = "201", description = "Doutor alterado com sucesso. Aguarde o processamento do Feed.")
+    @ApiResponse(responseCode = "201", description = "Feed gerado com sucesso. Aguarde o processamento do update. Utilize o endpoint /feed para checar o status do Feed")
     @PutMapping(value = "/update")
     public ResponseEntity<Feed> update(@RequestBody DoctorRequest body) throws URISyntaxException, Exception {
 
@@ -217,7 +217,7 @@ public class DoctorController {
 
     @ApiResponse(responseCode = "400", description = "Bad Request")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
-    @ApiResponse(responseCode = "201", description = "Feed createDoctor criado com sucesso. Aguarde processamento.")
+    @ApiResponse(responseCode = "201", description = "Feed gerado com sucesso. Aguarde o processamento do create. Utilize o endpoint /feed para checar o status do Feed")
     @PostMapping(value = "/asyncCreate")
     public ResponseEntity<Feed> asynCreate(@RequestBody DoctorRequest requestBody) throws Exception {
         Feed feedError = new Feed();
