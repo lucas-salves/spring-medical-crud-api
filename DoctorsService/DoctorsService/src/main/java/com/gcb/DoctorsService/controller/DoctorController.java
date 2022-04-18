@@ -202,6 +202,14 @@ public class DoctorController {
             if( !(requestBody.getCrm().matches("[0-9]+"))){
                 throw new Exception("ERR: 4.CRM: atributo CRM só pode conter apenas números. Payload: "+requestBody.getCrm());
             }
+            
+            if( !(requestBody.getLandline().matches("[0-9]+")) ){
+                throw new Exception("ERR: 5.Landline: atributo Landline só pode conter apenas números. Payload: "+requestBody.getCrm());
+            }
+            
+            if( !(requestBody.getMobilePhone().matches("[0-9]+")) ){
+                throw new Exception("ERR: 6.mobilePhone: atributo mobilePhone só pode conter apenas números. Payload: "+requestBody.getCrm());
+            }
 
             var publisher = new AMQPPublisher();
 
@@ -232,6 +240,12 @@ public class DoctorController {
             }
             
             if( ex.getMessage().contains("ERR: 4.") ){
+                return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
+            }
+            if( ex.getMessage().contains("ERR: 5.") ){
+                return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
+            }
+            if( ex.getMessage().contains("ERR: 6.") ){
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
             }
 
