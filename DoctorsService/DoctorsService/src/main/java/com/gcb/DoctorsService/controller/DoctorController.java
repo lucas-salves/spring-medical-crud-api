@@ -2,6 +2,7 @@ package com.gcb.DoctorsService.controller;
 
 import com.gcb.DoctorsService.entity.Doctor;
 import com.gcb.DoctorsService.interactor.DoctorCreator;
+import com.gcb.DoctorsService.model.DeleteDoctorRequest;
 import com.gcb.DoctorsService.model.DoctorRequest;
 import com.gcb.DoctorsService.model.Feed;
 import com.gcb.DoctorsService.repository.DoctorRepository;
@@ -11,6 +12,7 @@ import com.gcb.DoctorsService.service.AMQPPublisher;
 import com.gcb.DoctorsService.util.DoctorUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,23 +47,36 @@ public class DoctorController {
 
     @Autowired
     private DoctorCreator doctorCreator;
-
+    
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     @GetMapping(value = "/get")
     public ResponseEntity<Doctor> getDoctorById(@RequestParam("doctorId") String id) throws Exception {
+            
+        Doctor doctor = new Doctor();
 
         try {
 
-            Doctor doctor = new Doctor();
+            if(id.equals("") || id == null)
+                throw new Exception("Err 1.doctorId: Parâmetro doctorId obrigatório");
+            
 
             doctor = repository.findActiveDoctorById(id);
 
             return new ResponseEntity<>(doctor, HttpStatus.OK);
         } catch (Exception e) {
 
-            throw new Exception(e.getMessage());
+            if(e.getMessage().contains("Err 1."))
+                return new ResponseEntity<>(doctor, HttpStatus.BAD_REQUEST);
+            
+            return new ResponseEntity<>(doctor, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     @GetMapping(value = "/getAll")
     public ResponseEntity<List<Doctor>> listAll() throws Exception {
 
@@ -76,14 +91,17 @@ public class DoctorController {
         }
 
     }
-
+    
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     @GetMapping(value = "/search")
-    public ResponseEntity<List<Doctor>> search(@RequestParam String input) {
+    public ResponseEntity<List<Doctor>> search(@RequestParam String input) throws Exception {
 
         List<Doctor> doctors = null;
 
         try {
-
+            
             doctors = repository.searchDoctor(input);
 
             if (doctors == null) {
@@ -106,20 +124,38 @@ public class DoctorController {
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
 
+    @ApiResponse(responseCode = "204", description = "Deletado com sucesso.")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
     @PutMapping(value = "/delete")
-    public ResponseEntity<Doctor> delete(@RequestBody DoctorRequest body) {
+    public ResponseEntity<Doctor> delete(@RequestBody DeleteDoctorRequest body) {
 
         var doctor = repository.findActiveDoctorById(body.getCrm());
 
         doctor.setStatus("Deleted");
 
-        var response = repository.save(doctor);
+        try {
+            
+            if(body.getCrm().equals("") || body.getCrm() == null)
+                throw new Exception("Err 1.CRM: Campo CRM obrigatório");
+            
+            var response = repository.save(doctor);
+            
+        } catch (Exception e) {
+            if(e.getMessage().contains("Err 1."))
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 
     }
 
-    @PostMapping(value = "/update")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
+    @ApiResponse(responseCode = "201", description = "Doutor alterado com sucesso. Aguarde o processamento do Feed.")
+    @PutMapping(value = "/update")
     public ResponseEntity<Feed> update(@RequestBody DoctorRequest body) throws URISyntaxException, Exception {
 
         if (body.getSpecialtiesId().size() < 2) {
@@ -179,6 +215,9 @@ public class DoctorController {
 
     }
 
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Erro interno no servidor.")
+    @ApiResponse(responseCode = "201", description = "Feed createDoctor criado com sucesso. Aguarde processamento.")
     @PostMapping(value = "/asyncCreate")
     public ResponseEntity<Feed> asynCreate(@RequestBody DoctorRequest requestBody) throws Exception {
         Feed feedError = new Feed();
