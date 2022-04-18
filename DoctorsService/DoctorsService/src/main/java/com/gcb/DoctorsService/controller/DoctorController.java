@@ -215,6 +215,14 @@ public class DoctorController {
                 throw new Exception("ERR: 7.postalCode: atributo postalCode só pode conter apenas números. Payload: "+requestBody.getCrm());
             }
 
+            if( requestBody.getLandline().length() != 10 ){
+                throw new Exception("ERR: 8.Landline: atributo Landline precisa conter 10 caracteres. Exemplo: 1156478941. Payload: "+requestBody.getLandline());
+            }
+            
+            if( !(requestBody.getMobilePhone().matches("[0-9]+")) ){
+                throw new Exception("ERR: 9.mobilePhone: atributo mobilePhone precisa conter 11 caracteres. Exemplo: 11952230505. Payload: "+requestBody.getMobilePhone());
+            }
+            
             var publisher = new AMQPPublisher();
 
             publisher.sendToQueue("doctor_address", json);
@@ -255,6 +263,14 @@ public class DoctorController {
             if( ex.getMessage().contains("ERR: 7.") ){
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
             }
+            if( ex.getMessage().contains("ERR: 8.") ){
+                return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
+            }
+            if( ex.getMessage().contains("ERR: 9.") ){
+                return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
+            }
+            
+            
 
             Logger.getLogger(DoctorController.class.getName()).log(Level.SEVERE, null, ex);
 
