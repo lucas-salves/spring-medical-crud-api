@@ -1,13 +1,10 @@
-package com.gcb.DoctorsService.util;
+package com.gcb.DoctorConsumer.util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class DoctorUtil {
-    
+public class ConsumerUtil {
     public static String hashMD5(String input) throws Exception{
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
@@ -24,7 +21,6 @@ public class DoctorUtil {
             return hashText;
             
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(DoctorUtil.class.getName()).log(Level.SEVERE, null, ex);
             
             throw new Exception(ex.getMessage());
         }

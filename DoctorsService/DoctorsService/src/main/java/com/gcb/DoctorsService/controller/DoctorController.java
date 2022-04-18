@@ -8,6 +8,7 @@ import com.gcb.DoctorsService.repository.DoctorRepository;
 import com.gcb.DoctorsService.repository.DoctorSpecialtyRepository;
 import com.gcb.DoctorsService.repository.SpecialtyRepository;
 import com.gcb.DoctorsService.service.AMQPPublisher;
+import com.gcb.DoctorsService.util.DoctorUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import java.net.URISyntaxException;
@@ -195,8 +196,10 @@ public class DoctorController {
             var publisher = new AMQPPublisher();
 
             publisher.sendToQueue("doctor_address", json);
+            
+            var requestId = DoctorUtil.hashMD5(requestBody.getCrm());
 
-            var feed = doctorCreator.generateFeed(requestBody.getCrm(), "create");
+            var feed = doctorCreator.generateFeed(requestId, "create");
 
             return feed;
 

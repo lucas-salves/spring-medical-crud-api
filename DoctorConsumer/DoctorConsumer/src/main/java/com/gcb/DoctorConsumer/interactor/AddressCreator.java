@@ -3,6 +3,7 @@ package com.gcb.DoctorConsumer.interactor;
 import com.gcb.DoctorConsumer.model.Address;
 import com.gcb.DoctorConsumer.model.Doctor;
 import com.gcb.DoctorConsumer.model.Feed;
+import com.gcb.DoctorConsumer.util.ConsumerUtil;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -57,8 +58,9 @@ public class AddressCreator {
         return response;
     }
 
-    public ResponseEntity<Feed> updateStatus(String feedId, String status, String errorMessage) throws RestClientException {
+    public ResponseEntity<Feed> updateStatus(String feedId, String status, String errorMessage) throws RestClientException, Exception {
         
+        feedId = ConsumerUtil.hashMD5(feedId);
         
         Feed updateFeed = null;
         
