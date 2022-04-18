@@ -78,6 +78,12 @@
             <artifactId>javassist</artifactId>
             <version>3.25.0-GA</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.7</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
