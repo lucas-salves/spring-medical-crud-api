@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.Date;
 import java.util.List;
+import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,8 +47,9 @@ public class FeedController {
             repository.save(feed);
             
         } catch (Exception ex) {
-            throw new Exception(ex.getMessage());
-
+            
+            return new ResponseEntity<>(feed, HttpStatus.INTERNAL_SERVER_ERROR);
+            
         }
         return new ResponseEntity<Feed>(feed, HttpStatus.CREATED);
     }
