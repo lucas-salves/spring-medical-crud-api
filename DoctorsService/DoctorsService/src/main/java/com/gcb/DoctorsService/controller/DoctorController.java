@@ -178,10 +178,10 @@ public class DoctorController {
 
     @PostMapping(value = "/asyncCreate")
     public ResponseEntity<Feed> asynCreate(@RequestBody DoctorRequest requestBody) {
+            Feed feedError = new Feed();
 
         if (requestBody.getSpecialtiesId().size() < 2) {
 
-            Feed feedError = new Feed();
 
             feedError.setFeedErrors(true);
 
@@ -193,6 +193,10 @@ public class DoctorController {
         var json = gson.toJson(requestBody);
 
         try {
+            
+            if(requestBody.getName().length() > 120)
+                throw new Exception("Name: atributo Name acima de 120 caracteres.");
+            
             var publisher = new AMQPPublisher();
 
             publisher.sendToQueue("doctor_address", json);
@@ -204,10 +208,15 @@ public class DoctorController {
             return feed;
 
         } catch (Exception ex) {
+            
+            feedError.setFeedErrors(true);
+            
+            feedError.setMessageError(ex.getMessage());
+            
+            if("Name: atributo Name acima de 120 caracteres.".equals(ex.getMessage()))
+                return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
 
             Logger.getLogger(DoctorController.class.getName()).log(Level.SEVERE, null, ex);
-
-            Feed feedError = new Feed();
 
             feedError.setFeedErrors(true);
 
