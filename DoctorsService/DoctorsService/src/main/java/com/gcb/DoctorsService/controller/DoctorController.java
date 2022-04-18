@@ -81,22 +81,25 @@ public class DoctorController {
     public ResponseEntity<List<Doctor>> search(@RequestParam String input) {
 
         List<Doctor> doctors = null;
-        
+
         try {
-            
+
             doctors = repository.searchDoctor(input);
-            
-            if(doctors == null)
+
+            if (doctors == null) {
                 throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
-            
+            }
+
         } catch (HttpClientErrorException ex) {
-            
-            if(ex.getRawStatusCode() == 400)
+
+            if (ex.getRawStatusCode() == 400) {
                 return new ResponseEntity<>(doctors, HttpStatus.BAD_REQUEST);
-            
-            if(ex.getRawStatusCode() == 500)
+            }
+
+            if (ex.getRawStatusCode() == 500) {
                 return new ResponseEntity<>(doctors, HttpStatus.INTERNAL_SERVER_ERROR);
-            
+            }
+
             throw new HttpClientErrorException(ex.getStatusCode(), ex.getMessage());
         }
 
@@ -177,30 +180,25 @@ public class DoctorController {
     }
 
     @PostMapping(value = "/asyncCreate")
-    public ResponseEntity<Feed> asynCreate(@RequestBody DoctorRequest requestBody) {
-            Feed feedError = new Feed();
-
-        if (requestBody.getSpecialtiesId().size() < 2) {
-
-
-            feedError.setFeedErrors(true);
-
-            feedError.setMessageError("O número minimo de especialidades é 2.");
-
-            return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<Feed> asynCreate(@RequestBody DoctorRequest requestBody) throws Exception {
+        Feed feedError = new Feed();
 
         var json = gson.toJson(requestBody);
 
         try {
-            
-            if(requestBody.getName().length() > 120)
+
+            if (requestBody.getSpecialtiesId().size() < 2) {
+                throw new Exception("O número minimo de especialidades é 2.");
+            }
+
+            if (requestBody.getName().length() > 120) {
                 throw new Exception("Name: atributo Name acima de 120 caracteres.");
-            
+            }
+
             var publisher = new AMQPPublisher();
 
             publisher.sendToQueue("doctor_address", json);
-            
+
             var requestId = DoctorUtil.hashMD5(requestBody.getCrm());
 
             var feed = doctorCreator.generateFeed(requestId, "create");
@@ -208,13 +206,18 @@ public class DoctorController {
             return feed;
 
         } catch (Exception ex) {
-            
+
             feedError.setFeedErrors(true);
-            
+
             feedError.setMessageError(ex.getMessage());
-            
-            if("Name: atributo Name acima de 120 caracteres.".equals(ex.getMessage()))
+
+            if ("Name: atributo Name acima de 120 caracteres.".equals(ex.getMessage())) {
                 return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
+            }
+            
+            if("O número minimo de especialidades é 2.".equals(ex.getMessage())){
+                return new ResponseEntity<Feed>(feedError, HttpStatus.BAD_REQUEST);
+            }
 
             Logger.getLogger(DoctorController.class.getName()).log(Level.SEVERE, null, ex);
 
@@ -230,7 +233,7 @@ public class DoctorController {
     public ResponseEntity<Object> create(@RequestBody DoctorRequest requestBody) throws Exception {
 
         try {
-            System.out.println("/create: "+requestBody);
+            System.out.println("/create: " + requestBody);
             doctorCreator.createDoctorUseCase(requestBody);
 
             return null;
