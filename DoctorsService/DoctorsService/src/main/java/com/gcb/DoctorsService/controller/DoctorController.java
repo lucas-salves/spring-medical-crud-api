@@ -219,7 +219,7 @@ public class DoctorController {
                 throw new Exception("ERR: 8.Landline: atributo Landline precisa conter 10 caracteres. Exemplo: 1156478941. Payload: "+requestBody.getLandline());
             }
             
-            if( !(requestBody.getMobilePhone().matches("[0-9]+")) ){
+            if( requestBody.getMobilePhone().length() != 11 ){
                 throw new Exception("ERR: 9.mobilePhone: atributo mobilePhone precisa conter 11 caracteres. Exemplo: 11952230505. Payload: "+requestBody.getMobilePhone());
             }
             
