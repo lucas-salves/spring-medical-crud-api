@@ -204,15 +204,15 @@ public class DoctorController {
             }
             
             if( !(requestBody.getLandline().matches("[0-9]+")) ){
-                throw new Exception("ERR: 5.Landline: atributo Landline só pode conter apenas números. Payload: "+requestBody.getCrm());
+                throw new Exception("ERR: 5.Landline: atributo Landline só pode conter apenas números. Payload: "+requestBody.getLandline());
             }
             
             if( !(requestBody.getMobilePhone().matches("[0-9]+")) ){
-                throw new Exception("ERR: 6.mobilePhone: atributo mobilePhone só pode conter apenas números. Payload: "+requestBody.getCrm());
+                throw new Exception("ERR: 6.mobilePhone: atributo mobilePhone só pode conter apenas números. Payload: "+requestBody.getMobilePhone());
             }
             
             if( !(requestBody.getPostalCode().matches("[0-9]+")) ){
-                throw new Exception("ERR: 7.postalCode: atributo postalCode só pode conter apenas números. Payload: "+requestBody.getCrm());
+                throw new Exception("ERR: 7.postalCode: atributo postalCode só pode conter apenas números. Payload: "+requestBody.getPostalCode());
             }
 
             if( requestBody.getLandline().length() != 10 ){
